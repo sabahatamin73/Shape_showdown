@@ -1,4 +1,3 @@
-
 #include <SDL.h>
 #include <SDL_image.h>
 #include <stdio.h>
@@ -6,6 +5,7 @@
 #include <string>
 #include <stdlib.h>
 #include <time.h>
+
 
 class Game{
     //Screen dimension constants
@@ -23,6 +23,7 @@ class Game{
     //global reference to png image sheets
     SDL_Texture* assets=NULL;
     int state = 0;
+    bool restart=false;
 
 public:
 
@@ -33,5 +34,8 @@ public:
     void run();
     int counter = 0;
     int shooter_obj_moving = 0;
+    bool pause = false;
+    bool play_again = false;
+    bool state_4=false;
 };
 

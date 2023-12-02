@@ -2,11 +2,13 @@
 #include "ShapeShowdown.hpp"
 #include "DrawObjects.hpp"
 #include <iostream>
+
 using namespace std;
 SDL_Renderer* Drawing::gRenderer = NULL;
 SDL_Texture* Drawing::assets = NULL;
 SDL_Texture* Drawing::asset_bullet= NULL;
 SDL_Texture* Drawing::asset_explosion = NULL;
+
 // SDL_Texture* Drawing::assets1 = NULL;
 
 
@@ -89,9 +91,6 @@ void Game::close()
 	//Free loaded images
 	SDL_DestroyTexture(Drawing::assets);
 	Drawing::assets=NULL;
-	// Drawing::assets1=NULL;
-	// Drawing::assets2=NULL;
-	// Drawing::assets3=NULL;
 	SDL_DestroyTexture(gTexture);
 	
 	//Destroy window
@@ -144,34 +143,45 @@ void Game::run( )
 		//Handle events on queue
 		while( SDL_PollEvent( &e ) != 0 )
 		{
-			//User requests quit
 			if( e.type == SDL_QUIT )
 			{
 				quit = true;
 			}
-
-			if(e.type == SDL_MOUSEBUTTONDOWN)
+			else if(e.type == SDL_MOUSEBUTTONDOWN)
 			{
+				
 				cout << "inhere";
 				int xMouse, yMouse;
 				SDL_GetMouseState(&xMouse,&yMouse);
 				//when player clicks on play game
-				if (xMouse<346 && yMouse < 548  && xMouse > 182 && yMouse > 408)
+				if (xMouse<804 && yMouse<543 && xMouse> 266 && yMouse>405)
 				{
-					gTexture = loadTexture("GameBackground.jpeg"); //new screen texture opened
+					gTexture = loadTexture("GameBackground.jpeg"); 
 					state = 2;
+					if (play_again == true){  
+						ss.createObject(); 
+						ss.play_again();
+						play_again = false;
+					}
 				}
-
-				// //if instructions button is pressed
-				// else if (xMouse<997 && yMouse < 548  && xMouse > 384 && yMouse > 408)
-				// {
-				// 	//madanimals.deleteObject();
-				// 	gTexture = loadTexture("GameBackground.png");
-				// 	state = 2;	
+				//if instructions button is pressed
+				else if (xMouse<806 && yMouse>579 && xMouse>268 && yMouse< 718 && state==0)
+				{
+					gTexture = loadTexture("instructions.png");	
+					state=1; //each time a button is pressed and screen changes, state is changed
 					
-				// }
+				}
+				//when game over screen and player presses play again
+				else if (xMouse > 162 && yMouse > 300 && xMouse < 800 && yMouse < 700 && state==4)
+				{
+					gTexture = loadTexture("game_over.png");
+					ss.deleteObject();
+					play_again = true;
+					state=0;
+				}
 			}
-			if	(e.type == SDL_KEYDOWN && state==2)
+			
+			else if(e.type == SDL_KEYDOWN)
 			{	
 				if (e.key.keysym.sym == SDLK_LEFT)
 				{
@@ -184,28 +194,71 @@ void Game::run( )
 					ss.sh->movement(shooter_obj_moving);
 				}
 			}
-			if 	(e.key.keysym.sym == SDLK_SPACE)
-				{	
-					ss.shoot(); //collision function is implemented
-					
+			else if (e.key.keysym.sym == SDLK_SPACE) {
+				std::cout << "in space keyup\n";
+				if(e.type == SDL_KEYUP)
+				{
+					ss.shoot();
 				}
-
+			}
+			if	(e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_ESCAPE && pause== false){
+				gTexture = loadTexture("Pause.png");
+				state = 3;
+				pause = true;
+			}
+			else if	(e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_ESCAPE && pause==true)
+			{
+				gTexture = loadTexture("GameBackground.jpeg");
+				state = 2;
+				pause = false;
+			}
 		}
 		SDL_RenderClear(Drawing::gRenderer); //removes everything from renderer
-		SDL_RenderCopy(Drawing::gRenderer, gTexture, NULL, NULL);//Draws background
-		if (state == 2) {
+		SDL_RenderCopy(Drawing::gRenderer, gTexture, NULL, NULL);
+
+		if (state == 2 && restart == false) {
 			counter = rand()%100;
-			// ss.deleteObject();
 			ss.drawObjects();
 			if (counter>95)
 			{
 			 	ss.createObject();
 			}
 		}
+		
+		if (state==2 && restart==true)
+		{
+
+			ss.deleteObject();
+			ss.set_life();
+			ss.set_score();
+			
+			counter = rand()%100;
+			ss.drawObjects();
+			if (counter>95)
+			{
+				ss.createObject();
+			}
+		}
+
+		if (state==2 && ss.game_end()==true)
+		{
+			state=4;		
+		}
+
+		if(state==4) // state 4: gameover
+		{
+			gTexture = loadTexture("game_over.png");
+			state_4 = true;
+			ss.drawScore();
+			ss.game_end()==false;
+			ss.deleteObject(); //this function deleted everything
+			
+		}
+		
 
 
-		// SDL_RenderClear(Drawing::gRenderer); //removes everything from renderer
-		// SDL_RenderCopy(Drawing::gRenderer, gTexture, NULL, NULL);//Draws background to renderer
+		//SDL_RenderClear(Drawing::gRenderer); //removes everything from renderer
+		//SDL_RenderCopy(Drawing::gRenderer, gTexture, NULL, NULL);//Draws background to renderer
 		
 		//****************************************************************
     	SDL_RenderPresent(Drawing::gRenderer); //displays the updated renderer

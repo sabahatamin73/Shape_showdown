@@ -9,27 +9,15 @@ void Explosion::draw(){
 
         if (state==0) //with increment in stage, animation changes
         {   
-            srcRect={254, 194, 149, 137};
+            srcRect={34,20,147,141};
             state+=1;
             
         }
         else if (state==1)
         {
-            srcRect={238, 375, 85, 63};
-            state+=1;
+            srcRect={248,37,112, 107};
+            state+=0;
             
-        }
-        else if (state==2)
-        {
-            srcRect={274,16,89,70};
-            state+=1;
-            
-        }
-        else if (state==3)
-        {
-            srcRect={539, 374, 54, 63};
-            state+=1;
-            complete = true;
         }
         SDL_RenderCopy(Drawing::gRenderer, Drawing::asset_explosion, &srcRect, &moverRect);
         
@@ -39,7 +27,7 @@ void Explosion::draw(){
 
 Explosion::Explosion(int x, int y)
 {
-    srcRect = {100,123,21,20};
+    srcRect = {34,20,147,141};
     moverRect = {x, y, 80, 80};
 }
 

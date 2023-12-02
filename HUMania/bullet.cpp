@@ -3,7 +3,7 @@ using namespace std;
 #include <iostream>
 
 void Bullet::draw(){
-    SDL_RenderCopy(Drawing::gRenderer, Drawing::asset_bullet, &srcRect, &moverRect);
+    SDL_RenderCopy(Drawing::gRenderer, Drawing::assets, &srcRect, &moverRect);
     shot();    
 }
 int Bullet::get_x()
@@ -23,7 +23,7 @@ SDL_Rect* Bullet::get_mover()
 
 Bullet::Bullet(int x, int y)
 {    
-    srcRect={650, 141, 111, 539};
+    srcRect={838,141,119,118};
     moverRect={x+50,y-20,20,20};
 }
 

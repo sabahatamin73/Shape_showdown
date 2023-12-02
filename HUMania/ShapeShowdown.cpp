@@ -1,9 +1,9 @@
-// #include <iostream>
 #include "ShapeShowdown.hpp"
 #include "Shapes.hpp"
 #include "cube.hpp"
 #include "triangle.hpp"
 #include "circle.hpp"
+
 
 using namespace std;
 
@@ -16,16 +16,15 @@ public:
     {
         int randomNumberx;
         int prob = (rand() % 100) + 1 ;
-        int maxAttempts = 20; // maximum attempts to generate non-overlapping coordinates
+        int maxAttempts = 20; 
         
-        int fixedY = 0; // Set the initial y-coordinate for falling objects
+        int fixedY = 0; 
 
         do {
             randomNumberx = 25 + (rand() % 1250);
         } while (checkOverlap(randomNumberx, fixedY) && maxAttempts-- > 0);
         
         if (maxAttempts <= 0) {
-            // Couldn't find non-overlapping coordinates after maxAttempts, handle appropriately
             return nullptr;
         }
 
@@ -68,55 +67,102 @@ private:
 
 void ShapesShowdown::drawObjects()
 {
+    // if(t) {
+    //  t->draw();
+    // }
+    drawScore();
+    // t->draw(score);
     for(Shapes* u: Shape) 
     {  
         u->draw();            
         u->change();
     }
-    sh->draw();
-    for(Shapes* u: Shape) //looping through animals list
+
+    std::cout << "bullllllllet list ==== " << list_bullets.size() << "\n";
+    for(Bullet* b: list_bullets)
     {   
-        for(Bullet*& b: list_bullets) //looping through bullets list
+        b->draw();   
+    }
+    sh->draw();
+    for(Shapes* u: Shape) 
+    {   
+        for(Bullet*& b: list_bullets) 
         { 
-            if(SDL_HasIntersection (u->getMover(),b->get_mover())) //collision of bullet and animal
+            if(SDL_HasIntersection (u->getMover(),b->get_mover())) 
             {
                                               
-                explosive = new Explosion(b->get_x(),b->get_y()); //explosion object is created
+                explosive = new Explosion(b->get_x(),b->get_y()); 
                 explosive -> exploding = true;  
                 explosive->draw();
+                int bomb_x= b->get_x();
+                int bomb_y= b->get_y();
+                int r = rand() % 99;
+                if (r < 45)                 
+                bomb_dropping(bomb_x , bomb_y);
+                score=score+5;
                 delete u;
                 Shape.remove(u);                
                 delete b;
                 list_bullets.remove(b);
-                
             }
         }
     }
-
-    for (Shapes* & u: Shape)
+    for (Bomb * & b : bomb)
+    {
+        if (SDL_HasIntersection (b->getMover(),sh->get_mover()))
+        {
+            explosive_1 = new Explosion_1(b->get_x(),sh->get_y());
+            explosive_1->draw();
+            int life = sh->get_life()-1;
+            sh->set_life(life);
+            delete b;
+            bomb.remove(b);     //bombs, bullets, objects are deleted simulataneously
+            
+        }
+    }
+    l->draw(sh->get_life());
+    for (Shapes * & u: Shape)
     {
         if (SDL_HasIntersection (u->getMover(),sh->get_mover()))
         {
-            explosive = new Explosion(u->get_x(),u->get_y());
-            explosive->exploding=true; //this sets the trigger for explosion animation
+            explosive_1 = new Explosion_1(u->get_x(),sh->get_y());
+            explosive_1->draw();
+            
+            int life = sh->get_life()-1;
+            sh->set_life(life); 
             delete u;
             Shape.remove(u);                
+            
+        }
+
+    }
+    for(Bomb*& b: bomb)
+    {   
+        b->draw();
+        if (b->get_y()>=645) 
+        {
+            bomb.remove(b);
+            delete b;
         }
     }
-    // int bullet_x=sh->get_x();
-    // int bulllet_y=sh->get_y();
-    
-    for(Bullet*& b: list_bullets)
-    {   
-        b->draw();   
+    for (Shapes  * & u: Shape)
+    {
+        if (u->get_y()>=645) 
+        {              
+            delete u;
+            Shape.remove(u);                
+            score-=5;
+        }
     }
-    // if (explosive->exploding==true && explosive->complete==false) //this will enable complete explosion animation
-    // {
-    //     explosive->draw();            
-    //     explosive->drop();
-    // }
-    
-    // sh->draw();
+    if (*sh > 0)  //OPERATOR OVERLOADING: if shooter has life then it is drawn
+    {
+        sh->draw();
+    }
+
+    if (*sh==0 || score<0)  // OPERATOR OVERLOADING:if shooter health is zero or score is 0, game has to end
+    {
+        flag = true;
+    }
 }
 
 void ShapesShowdown::createObject()
@@ -128,6 +174,12 @@ void ShapesShowdown::createObject()
     {
         Shape.push_back(newObject);
     }
+
+}
+
+void ShapesShowdown::bomb_dropping(int x, int y){
+    Bomb * b = new Bomb(x , y);
+    bomb.push_back(b);
 }
 
 void ShapesShowdown::deleteObject()
@@ -136,15 +188,65 @@ void ShapesShowdown::deleteObject()
         delete u;
     }
     Shape.clear(); 
+
+    for(Bullet*& b: list_bullets)
+    {
+        delete b;
+		list_bullets.remove(b);	    
+    }
+    list_bullets.clear();
+
+    for(Bomb*& b: bomb)
+    {
+        delete b;
+		bomb.remove(b);
+	    
+    }
+    bomb.clear();
 }
 
 ShapesShowdown::ShapesShowdown()
 {
-    sh = new Shooter(730,500);
+    t = new Text();
+    sh = new Shooter(730,545);
+    l = new Life(50,50);
+
+    bool flag=false; 
+}
+
+void ShapesShowdown::set_life()
+{    
+    sh->set_life(5);
 }
 
 void ShapesShowdown::shoot()
 {
     Bullet * bul = new Bullet(sh->get_x(),sh->get_y());
     list_bullets.push_back(bul);
+    std::cout << " in shooot bullllllllet list ==== " << list_bullets.size() << "\n";
+}
+void ShapesShowdown:: play_again(){
+    flag = false;
+    sh -> set_life(5);
+    sh -> set_coordinates();
+    score = 0;
+}
+
+bool ShapesShowdown::game_end()
+{
+    if (flag==true)
+    {
+        return true;
+    }
+    return false;
+}
+
+void ShapesShowdown:: set_score()
+{
+    score=0;
+}
+
+void ShapesShowdown:: drawScore()
+{
+    t->draw(score);
 }

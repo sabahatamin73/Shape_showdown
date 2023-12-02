@@ -42,5 +42,69 @@ SDL_Rect* Shooter::get_mover()
 Shooter::Shooter(int x, int y)
 {    
     srcRect={992,399,234, 458};
-    moverRect={x,y,80,140};
+    moverRect={x,y,80,100};
+}
+
+bool Shooter::operator<(int i)
+{
+    if (life < i)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+bool Shooter:: operator>(int i)
+{
+    if (life> i)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+
+bool Shooter:: operator==(int i)
+{
+    if (life==i)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+
+// when shooter health == 0, shooter is destroyed
+bool Shooter::CharacterDestroyed()
+{
+    if (life==0)
+    {
+        return 1;
+    }
+    return 0;
+}
+
+int Shooter::get_life()
+{
+    return life;
+}
+
+void Shooter::set_life(int l)
+{
+    life = l;
+}
+
+void Shooter::set_coordinates()
+{
+    moverRect.x = 730;
+    moverRect.y = 650;
 }
