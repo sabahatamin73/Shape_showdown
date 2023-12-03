@@ -15,8 +15,6 @@ public:
     SDL_Rect* getMover();
     void draw();
     void drop();
-    
-    int get_y();
     bool complete=false;
     bool exploding=false;
     int state=0;
@@ -24,8 +22,6 @@ public:
     bool has_exploded();
 
     ~Explosion()
-    {
-        cout<<"Explosions deleted"<<endl;
-    }
+    { }
 
 };

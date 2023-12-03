@@ -11,6 +11,7 @@
 #include "life_shooter.hpp"
 #include "text.hpp"
 #include "Explosion_1.hpp"
+#include <SDL_mixer.h>
 // #include <SDL_ttf.h>
 
 using namespace std;
@@ -18,6 +19,7 @@ using namespace std;
 class ShapesShowdown{
     int score = 0;
     SDL_Renderer * gRenderer;
+    Mix_Music* music=NULL;
     SDL_Texture * assets;
     TTF_Font* font;
     public:

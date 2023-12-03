@@ -16,7 +16,6 @@ public:
     Explosion_1(int x, int y);
     ~Explosion_1()
     {
-        cout<<"Explosions deleted"<<endl;
     }
 
 };

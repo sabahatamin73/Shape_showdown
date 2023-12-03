@@ -24,7 +24,7 @@ SDL_Rect* Bullet::get_mover()
 Bullet::Bullet(int x, int y)
 {    
     srcRect={838,141,119,118};
-    moverRect={x+50,y-20,20,20};
+    moverRect={x+50,y-20,15,15};
 }
 
 void Bullet::shot() {

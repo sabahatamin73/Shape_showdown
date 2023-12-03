@@ -81,9 +81,6 @@ bool Shooter:: operator==(int i)
         return false;
     }
 }
-
-
-// when shooter health == 0, shooter is destroyed
 bool Shooter::CharacterDestroyed()
 {
     if (life==0)
@@ -106,5 +103,5 @@ void Shooter::set_life(int l)
 void Shooter::set_coordinates()
 {
     moverRect.x = 730;
-    moverRect.y = 650;
+    moverRect.y = 545;
 }

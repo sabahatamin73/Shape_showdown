@@ -5,6 +5,7 @@
 #include <string>
 #include <stdlib.h>
 #include <time.h>
+#include <SDL_mixer.h>
 
 
 class Game{
@@ -22,6 +23,7 @@ class Game{
     SDL_Texture* gTexture = NULL;
     //global reference to png image sheets
     SDL_Texture* assets=NULL;
+    Mix_Music* music=NULL;
     int state = 0;
     bool restart=false;
 

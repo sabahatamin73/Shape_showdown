@@ -2,6 +2,7 @@
 #include "ShapeShowdown.hpp"
 #include "DrawObjects.hpp"
 #include <iostream>
+#include <SDL_mixer.h>
 
 using namespace std;
 SDL_Renderer* Drawing::gRenderer = NULL;
@@ -41,6 +42,17 @@ bool Game::init()
 		}
 		else
 		{
+			if( !SDL_SetHint( SDL_HINT_RENDER_SCALE_QUALITY, "1" ) )
+			{
+				printf( "Warning: Linear texture filtering not enabled!" );
+			}
+
+			if( Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0 )
+			{
+				printf( "Unable to open audio: %s\n", Mix_GetError());
+				success=false;
+			}
+
 			//Create renderer for window
 			Drawing::gRenderer = SDL_CreateRenderer( gWindow, -1, SDL_RENDERER_ACCELERATED );
 			if( Drawing::gRenderer == NULL )
@@ -72,6 +84,7 @@ bool Game::loadMedia()
 {
 	//Loading success flag
 	bool success = true;
+	music=Mix_LoadMUS("gamemain.mp3");
 	Drawing::assets = loadTexture("assets.png");
 	Drawing::asset_bullet = loadTexture("bullet.png");
 	Drawing::asset_explosion = loadTexture("explosion.png");
@@ -84,6 +97,11 @@ bool Game::loadMedia()
         success = false;
     }
 	return success;
+	if( music == NULL )
+    {
+        printf( "Failed to load beat music! SDL_mixer Error: %s\n", Mix_GetError() );
+        success = false;
+    }
 }
 
 void Game::close()
@@ -92,7 +110,8 @@ void Game::close()
 	SDL_DestroyTexture(Drawing::assets);
 	Drawing::assets=NULL;
 	SDL_DestroyTexture(gTexture);
-	
+	Mix_FreeMusic(music);
+    music = NULL;
 	//Destroy window
 	SDL_DestroyRenderer( Drawing::gRenderer );
 	SDL_DestroyWindow( gWindow );
@@ -147,15 +166,17 @@ void Game::run( )
 			{
 				quit = true;
 			}
-			else if(e.type == SDL_MOUSEBUTTONDOWN)
+			if(e.type == SDL_MOUSEBUTTONDOWN)
 			{
 				
 				cout << "inhere";
 				int xMouse, yMouse;
 				SDL_GetMouseState(&xMouse,&yMouse);
 				//when player clicks on play game
-				if (xMouse<804 && yMouse<543 && xMouse> 266 && yMouse>405)
+				if (xMouse>168 && yMouse>343 && xMouse<802  && yMouse<460 && state == 0)
 				{
+					music=Mix_LoadMUS("click.wav"); //click sound plays
+					Mix_PlayMusic(music,0);
 					gTexture = loadTexture("GameBackground.jpeg"); 
 					state = 2;
 					if (play_again == true){  
@@ -165,23 +186,44 @@ void Game::run( )
 					}
 				}
 				//if instructions button is pressed
-				else if (xMouse<806 && yMouse>579 && xMouse>268 && yMouse< 718 && state==0)
+				else if (xMouse>168 && yMouse>480 && xMouse<804 && yMouse < 600 && state == 0)
 				{
+					music=Mix_LoadMUS("click.wav"); //click sound plays
+					Mix_PlayMusic(music,0);
 					gTexture = loadTexture("instructions.png");	
 					state=1; //each time a button is pressed and screen changes, state is changed
 					
 				}
-				//when game over screen and player presses play again
-				else if (xMouse > 162 && yMouse > 300 && xMouse < 800 && yMouse < 700 && state==4)
+				else if (xMouse>43 && yMouse>38 && xMouse<177 && yMouse<176 && state==1)
 				{
-					gTexture = loadTexture("game_over.png");
+					music=Mix_LoadMUS("click.wav"); //click sound plays
+					Mix_PlayMusic(music,0);
+					gTexture = loadTexture("GameMain.png");					
+					state=0;
+					
+				}
+				else if (xMouse>170 && yMouse>370 && xMouse<788 && yMouse<559 && state==3)
+				{
+					music=Mix_LoadMUS("click.wav"); //click sound plays
+					Mix_PlayMusic(music,0);
+					gTexture = loadTexture("GameMain.png");
+					ss.deleteObject();
+					play_again = true;
+					state=0;
+				}	
+				//when game over screen and player presses play again
+				else if (xMouse>214 && yMouse>239 && xMouse<769 && yMouse<403  && state==4)
+				{
+					music=Mix_LoadMUS("click.wav"); //click sound plays
+					Mix_PlayMusic(music,0);
+					gTexture = loadTexture("GameMain.png");
 					ss.deleteObject();
 					play_again = true;
 					state=0;
 				}
 			}
 			
-			else if(e.type == SDL_KEYDOWN)
+			else if(e.type == SDL_KEYDOWN && state == 2)
 			{	
 				if (e.key.keysym.sym == SDLK_LEFT)
 				{
@@ -194,6 +236,7 @@ void Game::run( )
 					ss.sh->movement(shooter_obj_moving);
 				}
 			}
+
 			else if (e.key.keysym.sym == SDLK_SPACE) {
 				std::cout << "in space keyup\n";
 				if(e.type == SDL_KEYUP)
@@ -201,6 +244,7 @@ void Game::run( )
 					ss.shoot();
 				}
 			}
+
 			if	(e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_ESCAPE && pause== false){
 				gTexture = loadTexture("Pause.png");
 				state = 3;
@@ -224,10 +268,17 @@ void Game::run( )
 			 	ss.createObject();
 			}
 		}
+
+		if(state == 0 ||  state == 1 ){
+			if (Mix_PlayingMusic()==0)
+			{
+				music=Mix_LoadMUS("main.mp3");
+				Mix_PlayMusic(music,0);
+			}
+		}
 		
 		if (state==2 && restart==true)
 		{
-
 			ss.deleteObject();
 			ss.set_life();
 			ss.set_score();
@@ -248,6 +299,11 @@ void Game::run( )
 		if(state==4) // state 4: gameover
 		{
 			gTexture = loadTexture("game_over.png");
+			if (Mix_PlayingMusic()==0)
+			{
+				music=Mix_LoadMUS("main.mp3");
+				Mix_PlayMusic(music,0);
+			}
 			state_4 = true;
 			ss.drawScore();
 			ss.game_end()==false;

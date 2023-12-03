@@ -94,6 +94,8 @@ void ShapesShowdown::drawObjects()
                 explosive = new Explosion(b->get_x(),b->get_y()); 
                 explosive -> exploding = true;  
                 explosive->draw();
+                music=Mix_LoadMUS("hit.wav"); 
+			    Mix_PlayMusic(music,0);
                 int bomb_x= b->get_x();
                 int bomb_y= b->get_y();
                 int r = rand() % 99;
@@ -113,10 +115,12 @@ void ShapesShowdown::drawObjects()
         {
             explosive_1 = new Explosion_1(b->get_x(),sh->get_y());
             explosive_1->draw();
+            music=Mix_LoadMUS("hitorg.wav"); 
+			Mix_PlayMusic(music,0);
             int life = sh->get_life()-1;
             sh->set_life(life);
             delete b;
-            bomb.remove(b);     //bombs, bullets, objects are deleted simulataneously
+            bomb.remove(b);     
             
         }
     }
@@ -127,7 +131,8 @@ void ShapesShowdown::drawObjects()
         {
             explosive_1 = new Explosion_1(u->get_x(),sh->get_y());
             explosive_1->draw();
-            
+            music=Mix_LoadMUS("hitorg.wav"); 
+			Mix_PlayMusic(music,0);
             int life = sh->get_life()-1;
             sh->set_life(life); 
             delete u;
@@ -223,7 +228,7 @@ void ShapesShowdown::shoot()
 {
     Bullet * bul = new Bullet(sh->get_x(),sh->get_y());
     list_bullets.push_back(bul);
-    std::cout << " in shooot bullllllllet list ==== " << list_bullets.size() << "\n";
+    // std::cout << " in shooot bullllllllet list ==== " << list_bullets.size() << "\n";
 }
 void ShapesShowdown:: play_again(){
     flag = false;
