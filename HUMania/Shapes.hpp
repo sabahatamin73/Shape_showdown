@@ -18,8 +18,6 @@ public:
     int get_y();
     int get_x();
     virtual ~Shapes()
-    {
-        cout<<"Shapes deleted"<<endl;
-    }
+    {}
 
 };

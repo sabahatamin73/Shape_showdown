@@ -3,8 +3,9 @@
 #include "DrawObjects.hpp"
 using namespace std;
 
+//coordinates taken through spritecow.com, cube changes its firm while falling downwards, 
+//this is managed through the frame variable
 void Cube::change(){
-    cout<<"flown"<<endl;
     if (frame == 0)
     {
         srcRect = {86, 459, 218, 195};
@@ -25,10 +26,12 @@ void Cube::change(){
         frame = 0;
     }
 
-    moverRect.y+=3; //moves the shape 3 pixels Down
+    moverRect.y+=3; //coordinates taken through spritecow.com, initial form of the cube
     
   
 }
+
+//coordinates taken through spritecow.com
 Cube::Cube(int x, int y){
      srcRect = {86, 459, 218, 195};
     moverRect = {x, y, 50, 50};

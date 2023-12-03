@@ -1,13 +1,15 @@
 #include "Explosion.hpp"
 #include <iostream>
-
 using namespace std;
+
+//coordinates taken through spritecow.com, explosion changes its form while falling downwards, 
+//this is managed through the state variable
 void Explosion::draw(){
 
     if (exploding==true)
     {
 
-        if (state==0) //with increment in stage, animation changes
+        if (state==0) 
         {   
             srcRect={34,20,147,141};
             state+=1;
@@ -24,16 +26,11 @@ void Explosion::draw(){
     }
 }
 
-
+//coordinates taken through spritecow.com
 Explosion::Explosion(int x, int y)
 {
     srcRect = {34,20,147,141};
     moverRect = {x, y, 80, 80};
-}
-
-void Explosion:: drop()
-{
-    moverRect.y+=0;
 }
 
 //this function checks if explosion is completely animated
@@ -41,7 +38,6 @@ bool Explosion::has_exploded()
 {
     if (complete==true)
     {   
-        //complete=false;
         return true;
     }   
     return false;

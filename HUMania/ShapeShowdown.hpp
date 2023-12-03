@@ -12,7 +12,7 @@
 #include "text.hpp"
 #include "Explosion_1.hpp"
 #include <SDL_mixer.h>
-// #include <SDL_ttf.h>
+
 
 using namespace std;
 
@@ -45,8 +45,4 @@ class ShapesShowdown{
     list <Bullet*> list_bullets;
     void play_again();
     ShapesShowdown();
-    // bool flag = false;
-    // int score = 0;
-
-    
 };

@@ -13,7 +13,5 @@ public:
     void change() override;
     Circle(int x, int y);
     ~Circle()
-    {
-        cout<<"Circle destroyed"<<endl;
-    }
+    {}
 };

@@ -6,6 +6,4 @@ class Life{
     void draw(int value);
     Life();
     Life(int x, int y);
-    
-  
 };

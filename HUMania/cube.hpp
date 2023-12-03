@@ -13,7 +13,5 @@ public:
     void change() override;
     Cube(int x, int y);
     ~Cube()
-    {
-        cout<<"Cube destroyed"<<endl;
-    }
+    {}
 };

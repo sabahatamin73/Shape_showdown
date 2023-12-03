@@ -3,8 +3,9 @@
 #include "DrawObjects.hpp"
 using namespace std;
 
+//coordinates taken through spritecow.com, circle changes its firm while falling downwards, 
+//this is managed through the frame variable
 void Circle::change(){
-    cout<<"flown"<<endl;
     if (frame == 0)
     {
         srcRect = {1130, 60, 123, 122};
@@ -24,12 +25,11 @@ void Circle::change(){
     {
         frame = 0;
     }
-
+    //moves vertically downwards, increasing this would increase the speed with which it falls down
     moverRect.y+=3; 
-    
-  
 }
 
+//coordinates taken through spritecow.com, initial form of the circle
 Circle::Circle(int x, int y){
     srcRect = {1650, 60, 123, 122};
     moverRect = {x, y, 50, 50};

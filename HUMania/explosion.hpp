@@ -14,7 +14,6 @@ public:
     Explosion(){};   
     SDL_Rect* getMover();
     void draw();
-    void drop();
     bool complete=false;
     bool exploding=false;
     int state=0;

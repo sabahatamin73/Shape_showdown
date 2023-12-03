@@ -17,9 +17,6 @@ public:
     Bomb(int x, int y);
     int get_x();
     void dropped();
-
     ~ Bomb()
-    {
-        cout<<"Bombs deleted"<<endl;
-    }
+    {}
 };

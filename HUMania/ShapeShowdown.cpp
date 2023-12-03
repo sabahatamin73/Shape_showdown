@@ -67,23 +67,22 @@ private:
 
 void ShapesShowdown::drawObjects()
 {
-    // if(t) {
-    //  t->draw();
-    // }
     drawScore();
-    // t->draw(score);
+    //calling the draw function from the base class, and the change function too,so that they change forms
     for(Shapes* u: Shape) 
     {  
         u->draw();            
         u->change();
     }
 
-    std::cout << "bullllllllet list ==== " << list_bullets.size() << "\n";
+    //drawing bullets
     for(Bullet* b: list_bullets)
     {   
         b->draw();   
     }
-    sh->draw();
+
+    //checking intersection between shape and bullets, if a shape is shot, explosion is created.
+    //and a bomb is dropped randomly from some shapes
     for(Shapes* u: Shape) 
     {   
         for(Bullet*& b: list_bullets) 
@@ -98,8 +97,8 @@ void ShapesShowdown::drawObjects()
 			    Mix_PlayMusic(music,0);
                 int bomb_x= b->get_x();
                 int bomb_y= b->get_y();
-                int r = rand() % 99;
-                if (r < 45)                 
+                int r = rand() % 100;
+                if (r < 50)                 
                 bomb_dropping(bomb_x , bomb_y);
                 score=score+5;
                 delete u;
@@ -109,6 +108,8 @@ void ShapesShowdown::drawObjects()
             }
         }
     }
+
+    //intersection between bomb and shooter is checked, if a bomb hits the shooter, one life is reduced
     for (Bomb * & b : bomb)
     {
         if (SDL_HasIntersection (b->getMover(),sh->get_mover()))
@@ -124,7 +125,11 @@ void ShapesShowdown::drawObjects()
             
         }
     }
+
+    //lifes drawn
     l->draw(sh->get_life());
+
+    //intersection checked between shape and shooter, if the shapes hit the shotter, score is reduced by 5
     for (Shapes * & u: Shape)
     {
         if (SDL_HasIntersection (u->getMover(),sh->get_mover()))
@@ -141,6 +146,8 @@ void ShapesShowdown::drawObjects()
         }
 
     }
+
+    //bomb drawn, if it falls out of the screen without hitting the shooter, it is deleted
     for(Bomb*& b: bomb)
     {   
         b->draw();
@@ -150,6 +157,8 @@ void ShapesShowdown::drawObjects()
             delete b;
         }
     }
+
+    //shapes drawn, if they fall out of the screen without hitting the shooter, they are deleted
     for (Shapes  * & u: Shape)
     {
         if (u->get_y()>=645) 
@@ -164,7 +173,7 @@ void ShapesShowdown::drawObjects()
         sh->draw();
     }
 
-    if (*sh==0 || score<0)  // OPERATOR OVERLOADING:if shooter health is zero or score is 0, game has to end
+    if (*sh==0 || score<0)  // OPERATOR OVERLOADING:if shooter health is zero or score is < 0, game has to end
     {
         flag = true;
     }
@@ -187,6 +196,7 @@ void ShapesShowdown::bomb_dropping(int x, int y){
     bomb.push_back(b);
 }
 
+//all objects deleted
 void ShapesShowdown::deleteObject()
 {
     for(Shapes* u: Shape){
@@ -224,12 +234,14 @@ void ShapesShowdown::set_life()
     sh->set_life(5);
 }
 
+// bullet list managed
 void ShapesShowdown::shoot()
 {
     Bullet * bul = new Bullet(sh->get_x(),sh->get_y());
     list_bullets.push_back(bul);
-    // std::cout << " in shooot bullllllllet list ==== " << list_bullets.size() << "\n";
 }
+
+
 void ShapesShowdown:: play_again(){
     flag = false;
     sh -> set_life(5);

@@ -9,10 +9,6 @@ SDL_Renderer* Drawing::gRenderer = NULL;
 SDL_Texture* Drawing::assets = NULL;
 SDL_Texture* Drawing::asset_bullet= NULL;
 SDL_Texture* Drawing::asset_explosion = NULL;
-
-// SDL_Texture* Drawing::assets1 = NULL;
-
-
 bool Game::init()
 {
 	//Initialization flag
@@ -151,7 +147,7 @@ SDL_Texture* Game::loadTexture( std::string path )
 }
 void Game::run( )
 {
-	//main object created
+	//Main object created
 	ShapesShowdown ss;
 	bool quit = false;
 	SDL_Event e;
@@ -185,7 +181,8 @@ void Game::run( )
 						play_again = false;
 					}
 				}
-				//if instructions button is pressed
+
+				//If instructions button is pressed
 				else if (xMouse>168 && yMouse>480 && xMouse<804 && yMouse < 600 && state == 0)
 				{
 					music=Mix_LoadMUS("click.wav"); //click sound plays
@@ -194,14 +191,18 @@ void Game::run( )
 					state=1; //each time a button is pressed and screen changes, state is changed
 					
 				}
+
+				//If the back button on the instruction screen is pressed
 				else if (xMouse>43 && yMouse>38 && xMouse<177 && yMouse<176 && state==1)
 				{
 					music=Mix_LoadMUS("click.wav"); //click sound plays
 					Mix_PlayMusic(music,0);
 					gTexture = loadTexture("GameMain.png");					
-					state=0;
+					state=0; //state is set back to the main screen
 					
 				}
+
+				//If the quit botton on the paused screen is pressed
 				else if (xMouse>170 && yMouse>370 && xMouse<788 && yMouse<559 && state==3)
 				{
 					music=Mix_LoadMUS("click.wav"); //click sound plays
@@ -209,8 +210,9 @@ void Game::run( )
 					gTexture = loadTexture("GameMain.png");
 					ss.deleteObject();
 					play_again = true;
-					state=0;
+					state=0;  //state is set back to the main screen
 				}	
+
 				//when game over screen and player presses play again
 				else if (xMouse>214 && yMouse>239 && xMouse<769 && yMouse<403  && state==4)
 				{
@@ -219,10 +221,11 @@ void Game::run( )
 					gTexture = loadTexture("GameMain.png");
 					ss.deleteObject();
 					play_again = true;
-					state=0;
+					state=0;  //state is set back to the main screen
 				}
 			}
 			
+			//shooter movement when the right, left keys are pressed
 			else if(e.type == SDL_KEYDOWN && state == 2)
 			{	
 				if (e.key.keysym.sym == SDLK_LEFT)
@@ -237,14 +240,15 @@ void Game::run( )
 				}
 			}
 
+			//Shoot function called when space bar is pressed
 			else if (e.key.keysym.sym == SDLK_SPACE) {
-				std::cout << "in space keyup\n";
 				if(e.type == SDL_KEYUP)
 				{
 					ss.shoot();
 				}
 			}
 
+			//when Esc key is pressed game is paused, and resumed when it is pressed again
 			if	(e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_ESCAPE && pause== false){
 				gTexture = loadTexture("Pause.png");
 				state = 3;
@@ -260,6 +264,9 @@ void Game::run( )
 		SDL_RenderClear(Drawing::gRenderer); //removes everything from renderer
 		SDL_RenderCopy(Drawing::gRenderer, gTexture, NULL, NULL);
 
+		//states are handled here
+
+		//2: Playing mode
 		if (state == 2 && restart == false) {
 			counter = rand()%100;
 			ss.drawObjects();
@@ -269,6 +276,7 @@ void Game::run( )
 			}
 		}
 
+		//1: Instruction screen, 0: Home Screen
 		if(state == 0 ||  state == 1 ){
 			if (Mix_PlayingMusic()==0)
 			{
@@ -277,6 +285,8 @@ void Game::run( )
 			}
 		}
 		
+		//2: Playing Mode, with the game restarted, 
+		//so the previous tate is destroyed, and new objects are drawn, new life and score is set
 		if (state==2 && restart==true)
 		{
 			ss.deleteObject();
@@ -291,12 +301,13 @@ void Game::run( )
 			}
 		}
 
+		//If the player looses,game state is set to 4
 		if (state==2 && ss.game_end()==true)
 		{
 			state=4;		
 		}
 
-		if(state==4) // state 4: gameover
+		if(state==4) //4: gameover
 		{
 			gTexture = loadTexture("game_over.png");
 			if (Mix_PlayingMusic()==0)
@@ -310,11 +321,6 @@ void Game::run( )
 			ss.deleteObject(); //this function deleted everything
 			
 		}
-		
-
-
-		//SDL_RenderClear(Drawing::gRenderer); //removes everything from renderer
-		//SDL_RenderCopy(Drawing::gRenderer, gTexture, NULL, NULL);//Draws background to renderer
 		
 		//****************************************************************
     	SDL_RenderPresent(Drawing::gRenderer); //displays the updated renderer

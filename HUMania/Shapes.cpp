@@ -3,12 +3,9 @@
 
 using namespace std;
 
-// Unit class is well implemented, no need to change it
-
+//Base class, to draw shapes
 void Shapes::draw(){
-    
     SDL_RenderCopy(Drawing::gRenderer, Drawing::assets, &srcRect, &moverRect);
-    cout<<"Drawn"<<endl;
 };
 
 SDL_Rect* Shapes::getMover()

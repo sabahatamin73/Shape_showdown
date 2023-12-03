@@ -9,10 +9,7 @@ class Text {
     TTF_Font* font;
     SDL_Color White;
     SDL_Rect srcRect, moverRect;
-    // SDL_Texture* Message;
-    // TTF_Font* font{nullptr};
     SDL_Surface* surfaceMessage;
-    // SDL_Window* temp;
 
 public:
     Text();

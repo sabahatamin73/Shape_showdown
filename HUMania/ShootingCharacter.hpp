@@ -21,7 +21,6 @@ class Shooter{
         return life;
     }  
     bool CharacterDestroyed();
-    // Shooter();
     Shooter(int, int);
     int get_x();
     int get_y();

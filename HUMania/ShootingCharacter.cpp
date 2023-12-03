@@ -6,14 +6,13 @@ void Shooter::draw(){
     SDL_RenderCopy(Drawing::gRenderer, Drawing::assets, &srcRect, &moverRect);    
 }
 void Shooter::movement(int move){
-
+    //if the shooter reaches the end of the screen horizontally, he appears from the beginning
     if (move==1)
     {
         if (moverRect.x < 0)
         {
             moverRect.x = 1300;
         }
-        cout<<"left"<<endl;
         moverRect.x=moverRect.x-30;
     }
     if (move==2)
@@ -45,49 +44,26 @@ Shooter::Shooter(int x, int y)
     moverRect={x,y,80,100};
 }
 
+
 bool Shooter::operator<(int i)
 {
-    if (life < i)
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    }
+    return (life < i)
 }
 
 bool Shooter:: operator>(int i)
 {
-    if (life> i)
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    }
+    return (life > i)
 }
 
 
 bool Shooter:: operator==(int i)
 {
-    if (life==i)
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    }
+    return (life == i)
 }
+
 bool Shooter::CharacterDestroyed()
 {
-    if (life==0)
-    {
-        return 1;
-    }
-    return 0;
+    return (life == 0)
 }
 
 int Shooter::get_life()
