@@ -47,23 +47,23 @@ Shooter::Shooter(int x, int y)
 
 bool Shooter::operator<(int i)
 {
-    return (life < i)
+    return (life < i);
 }
 
 bool Shooter:: operator>(int i)
 {
-    return (life > i)
+    return (life > i);
 }
 
 
 bool Shooter:: operator==(int i)
 {
-    return (life == i)
+    return (life == i);
 }
 
 bool Shooter::CharacterDestroyed()
 {
-    return (life == 0)
+    return (life == 0);
 }
 
 int Shooter::get_life()
